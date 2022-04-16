@@ -6,6 +6,7 @@ import com.mini.rpc.provider.RpcProviderPostProcessor;
 import com.mini.rpc.provider.registry.RegistryFactory;
 import com.mini.rpc.provider.registry.RegistryService;
 import com.mini.rpc.provider.registry.RegistryType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @EnableConfigurationProperties(RpcProperties.class)
+@Slf4j
 @Import(RpcConsumerPostProcessor.class)
 public class RpcAutoConfiguration {
 
@@ -32,6 +34,7 @@ public class RpcAutoConfiguration {
     )
     @Bean
     public BeanPostProcessor rpcProviderPostProcessor() throws Exception {
+        log.info("register RpcProviderPostProcessor");
         RegistryType type = RegistryType.valueOf(rpcProperties.getRegistry().getType());
         RegistryService registryService = RegistryFactory.getInstance(rpcProperties.getRegistry().getAddress(), type);
         return new RpcProviderPostProcessor(rpcProperties.getProtocol().getPort(), registryService);
